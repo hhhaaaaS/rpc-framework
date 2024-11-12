@@ -16,6 +16,15 @@
         <version>3.1.3</version>
     </parent>
 
+    <properties>
+        <netty.version>4.1.97.Final</netty.version>
+        <fastjson.version>1.2.29</fastjson.version>
+        <jboss-marshalling-river.version>1.4.11.Final</jboss-marshalling-river.version>
+        <jboss-marshalling-serial.version>1.4.11.Final</jboss-marshalling-serial.version>
+        <slf4j-api.version>1.7.13</slf4j-api.version>
+        <javassist.version>3.21.0-GA</javassist.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -30,7 +39,11 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-
+        <!--引入spring-boot-starter-web,支持web开发-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
@@ -69,10 +82,11 @@
             <artifactId>curator-recipes</artifactId>
             <version>2.7.0</version>
         </dependency>
+
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.36.Final</version>
+            <version>${netty.version}</version>
         </dependency>
         <!-- Protostuff -->
         <dependency>
@@ -105,6 +119,18 @@
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+        <!--序列化 接收方工具-->
+        <dependency>
+            <groupId>org.jboss.marshalling</groupId>
+            <artifactId>jboss-marshalling-river</artifactId>
+            <version>${jboss-marshalling-river.version}</version>
+        </dependency>
+        <!--序列化 处理工具-->
+        <dependency>
+            <groupId>org.jboss.marshalling</groupId>
+            <artifactId>jboss-marshalling-serial</artifactId>
+            <version>${jboss-marshalling-serial.version}</version>
         </dependency>
     </dependencies>
 
