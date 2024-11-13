@@ -12,6 +12,7 @@ import com.hym.rpc.config.ServerConfig;
 import com.hym.rpc.core.encoder.RpcDecoder;
 import com.hym.rpc.core.encoder.RpcEncoder;
 import com.hym.rpc.core.socket.serve.handle.ServerHandler;
+import com.hym.rpc.rpcInterface.impl.DataServiceImpl;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -20,9 +21,13 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import jakarta.annotation.Resource;
-import org.springframework.stereotype.Component;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
-@Component
+import static com.hym.rpc.common.cache.CommonServerCache.*;
+
+@Data
+@Slf4j
 public class Server {
 
     private static EventLoopGroup bossGroup = null;
@@ -40,11 +45,11 @@ public class Server {
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(bossGroup, workerGroup);
         bootstrap.channel(NioServerSocketChannel.class);
-        bootstrap.option(ChannelOption.TCP_NODELAY, true);
+        bootstrap.option(ChannelOption.SO_RCVBUF, 16 * 1024);
         bootstrap.option(ChannelOption.SO_BACKLOG, 1024);
-        bootstrap.option(ChannelOption.SO_SNDBUF, 16 * 1024)
-                .option(ChannelOption.SO_RCVBUF, 16 * 1024)
-                .option(ChannelOption.SO_KEEPALIVE, true);
+        bootstrap.childOption(ChannelOption.SO_SNDBUF, 16 * 1024)
+                .childOption(ChannelOption.TCP_NODELAY, true)
+                .childOption(ChannelOption.SO_KEEPALIVE, true);
 
         bootstrap.childHandler(new ChannelInitializer<SocketChannel>() {
             @Override
@@ -56,7 +61,29 @@ public class Server {
             }
         });
         bootstrap.bind(serverConfig.getPort()).sync();
+        log.info("server启动完成");
+    }
 
+    public void registyService(Object serviceBean) {
+        if (serviceBean.getClass().getInterfaces().length == 0) {
+            throw new RuntimeException("service must had interfaces!");
+        }
+        Class[] classes = serviceBean.getClass().getInterfaces();
+        if (classes.length > 1) {
+            throw new RuntimeException("service must only had one interfaces!");
+        }
+        Class interfaceClass = classes[0];
+        PROVIDER_CLASS_MAP.put(interfaceClass.getName(), serviceBean);
+    }
+
+
+    public static void main(String[] args) throws InterruptedException {
+        Server server = new Server();
+        ServerConfig serverConfig = new ServerConfig();
+        serverConfig.setPort(9090);
+        server.setServerConfig(serverConfig);
+        server.registyService(new DataServiceImpl());
+        server.startApplication();
     }
 
 }

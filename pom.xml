@@ -5,10 +5,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.hym.rpc</groupId>
-    <artifactId>rpc-spring-boot-starter</artifactId>
+    <artifactId>rpc-framework</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <modules>
+        <module>rpc-consumer</module>
+        <module>rpc-producer</module>
+    </modules>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -17,7 +21,7 @@
     </parent>
 
     <properties>
-        <netty.version>4.1.97.Final</netty.version>
+        <netty.version>4.1.60.Final</netty.version>
         <fastjson.version>1.2.29</fastjson.version>
         <jboss-marshalling-river.version>1.4.11.Final</jboss-marshalling-river.version>
         <jboss-marshalling-serial.version>1.4.11.Final</jboss-marshalling-serial.version>
@@ -77,12 +81,26 @@
             <artifactId>commons-lang</artifactId>
             <version>2.6</version>
         </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-recipes</artifactId>
             <version>2.7.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>netty-transport</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>netty</artifactId>
+                    <groupId>io.netty</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>zookeeper</artifactId>
+                    <groupId>org.apache.zookeeper</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
+-->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>

@@ -10,5 +10,5 @@ package com.hym.rpc.constant;
 
 public class Constants {
 
-    public static Short MAGIC_NUMBER=Short.valueOf("69652");
+    public static Short MAGIC_NUMBER=Short.valueOf("2563");
 }

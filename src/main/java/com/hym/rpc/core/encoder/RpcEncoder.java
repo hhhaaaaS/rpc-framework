@@ -12,8 +12,10 @@ import com.hym.rpc.core.protocol.RpcProtocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import lombok.extern.slf4j.Slf4j;
 
-public class RpcEncoder extends MessageToByteEncoder<RpcProtocol> {
+@Slf4j
+public class RpcEncoder extends MessageToByteEncoder<RpcProtocol>{
 
 
     @Override
@@ -21,5 +23,14 @@ public class RpcEncoder extends MessageToByteEncoder<RpcProtocol> {
         out.writeShort(msg.getMagicNumber());
         out.writeInt(msg.getContentLength());
         out.writeBytes(msg.getContent());
+        log.info("encode: "+msg);
     }
+
+   /* @Override
+    protected void encode(ChannelHandlerContext channelHandlerContext, Object o, ByteBuf out) throws Exception {
+        out.writeShort(msg.getMagicNumber());
+        out.writeInt(msg.getContentLength());
+        out.writeBytes(msg.getContent());
+        log.info("encode: "+msg);
+    }*/
 }

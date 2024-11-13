@@ -13,9 +13,11 @@ import com.hym.rpc.core.protocol.RpcProtocol;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 public class RpcDecoder extends ByteToMessageDecoder {
 
     /**
@@ -26,6 +28,7 @@ public class RpcDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf byteBuf, List<Object> out) throws Exception {
 
+        log.info("decode :{}",byteBuf);
         if (byteBuf.readableBytes() >= BASE_LENGTH) {
             //防止收到一些体积过大的数据包
             if (byteBuf.readableBytes() > 1000) {
@@ -55,6 +58,7 @@ public class RpcDecoder extends ByteToMessageDecoder {
             byte[] data = new byte[length];
             byteBuf.readBytes(data);
             RpcProtocol rpcProtocol = new RpcProtocol(data);
+            rpcProtocol.setContentLength(length);
             out.add(rpcProtocol);
         }
     }

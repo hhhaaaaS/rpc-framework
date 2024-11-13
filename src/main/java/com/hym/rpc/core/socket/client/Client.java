@@ -10,6 +10,7 @@ package com.hym.rpc.core.socket.client;
 
 import com.alibaba.fastjson.JSON;
 import com.hym.rpc.config.ClientConfig;
+import com.hym.rpc.constant.Constants;
 import com.hym.rpc.core.encoder.RpcDecoder;
 import com.hym.rpc.core.encoder.RpcEncoder;
 import com.hym.rpc.core.protocol.RpcInvocation;
@@ -17,6 +18,7 @@ import com.hym.rpc.core.protocol.RpcProtocol;
 import com.hym.rpc.core.proxy.jdk.JDKProxyFactory;
 import com.hym.rpc.core.proxy.RpcReference;
 import com.hym.rpc.core.socket.client.handle.ClientHandler;
+import com.hym.rpc.rpcInterface.DataService;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -36,6 +38,23 @@ public class Client {
     public static EventLoopGroup clientGroup = new NioEventLoopGroup();
 
     private ClientConfig clientConfig;
+
+
+
+    public static void main(String[] args) throws Throwable {
+        Client client = new Client();
+        ClientConfig clientConfig = new ClientConfig();
+        clientConfig.setPort(9090);
+        clientConfig.setServerAddr("localhost");
+        client.setClientConfig(clientConfig);
+        RpcReference rpcReference = client.startClientApplication();
+        DataService dataService = rpcReference.get(DataService.class);
+        for(int i=0;i<100;i++){
+            log.info("循环发送:{}",i);
+            String result = dataService.sendData("test");
+            System.out.println(result);
+        }
+    }
 
 
     public RpcReference startClientApplication() throws InterruptedException {
@@ -84,16 +103,22 @@ public class Client {
 
         @Override
         public void run() {
+            int count=1;
             while (true) {
                 try {
+                    log.info("client循环发送次数：{}",count);
                     //阻塞模式
                     RpcInvocation data = SEND_QUEUE.take();
                     //将RpcInvocation封装到RpcProtocol对象中，然后发送给服务端，这里正好对应了上文中的ServerHandler
                     String json = JSON.toJSONString(data);
-                    RpcProtocol rpcProtocol = new RpcProtocol(json.getBytes());
-
+                    log.info("client发送数据:{}",json);
+                    byte[] bytes = json.getBytes();
+                    RpcProtocol rpcProtocol = new RpcProtocol(bytes);
+                    rpcProtocol.setMagicNumber(Constants.MAGIC_NUMBER);
+                    rpcProtocol.setContentLength(bytes.length);
                     //netty的通道负责发送数据给服务端
                     channelFuture.channel().writeAndFlush(rpcProtocol);
+                    count++;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

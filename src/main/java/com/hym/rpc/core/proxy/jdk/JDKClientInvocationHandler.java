@@ -41,12 +41,13 @@ public class JDKClientInvocationHandler implements InvocationHandler {
         SEND_QUEUE.add(rpcInvocation);
         long beginTime = System.currentTimeMillis();
         //客户端请求超时的一个判断依据
-        while (System.currentTimeMillis() - beginTime < 3*1000) {
+        while (System.currentTimeMillis() - beginTime < 5*1000) {
             Object object = RESP_MAP.get(rpcInvocation.getUuid());
             if (object instanceof RpcInvocation) {
                 return ((RpcInvocation)object).getResponse();
             }
         }
-        throw new TimeoutException("client wait server's response timeout!");
+        return null;
+        //throw new TimeoutException("client wait server's response timeout!");
     }
 }

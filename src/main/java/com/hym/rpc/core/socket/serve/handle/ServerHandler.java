@@ -11,16 +11,21 @@ package com.hym.rpc.core.socket.serve.handle;
 import com.alibaba.fastjson.JSON;
 import com.hym.rpc.core.protocol.RpcInvocation;
 import com.hym.rpc.core.protocol.RpcProtocol;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lombok.extern.slf4j.Slf4j;
+
 import static com.hym.rpc.common.cache.CommonServerCache.PROVIDER_CLASS_MAP;
 import java.lang.reflect.Method;
-
+@Slf4j
 public class ServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        //服务端接收数据的时候统一以RpcProtocol协议的格式接收，具体的发送逻辑见文章下方客户端发送部分
+        log.info("server read");
+        //服务端接收数据的时候统一以RpcProtocol协议的格式接收，具体的发送逻辑见方客户端发送部分
         RpcProtocol rpcProtocol = (RpcProtocol) msg;
         String json = new String(rpcProtocol.getContent(), 0, rpcProtocol.getContentLength());
         RpcInvocation rpcInvocation = JSON.parseObject(json, RpcInvocation.class);
@@ -39,13 +44,23 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                 break;
             }
         }
+
         rpcInvocation.setResponse(result);
-        RpcProtocol respRpcProtocol = new RpcProtocol(JSON.toJSONString(rpcInvocation).getBytes());
-        ctx.writeAndFlush(respRpcProtocol);
+        byte[] bytes = JSON.toJSONString(rpcInvocation).getBytes();
+        RpcProtocol respRpcProtocol = new RpcProtocol(bytes);
+        ByteBuf buf = Unpooled.buffer(bytes.length);
+        log.info("server send,length:{}",bytes.length);
+        ctx.writeAndFlush(buf);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         super.exceptionCaught(ctx, cause);
     }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("客户端断开链接" + ctx.channel().localAddress().toString());
+    }
+
 }
