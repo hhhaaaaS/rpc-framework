@@ -9,6 +9,7 @@
 package com.hym.rpc.core.socket.serve.handle;
 
 import com.alibaba.fastjson.JSON;
+import com.hym.rpc.constant.Constants;
 import com.hym.rpc.core.protocol.RpcInvocation;
 import com.hym.rpc.core.protocol.RpcProtocol;
 import io.netty.buffer.ByteBuf;
@@ -48,9 +49,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
         rpcInvocation.setResponse(result);
         byte[] bytes = JSON.toJSONString(rpcInvocation).getBytes();
         RpcProtocol respRpcProtocol = new RpcProtocol(bytes);
-        ByteBuf buf = Unpooled.buffer(bytes.length);
+        //ByteBuf buf = Unpooled.buffer(bytes.length);
+        respRpcProtocol.setContentLength(bytes.length);
+        respRpcProtocol.setContent(bytes);
+        respRpcProtocol.setMagicNumber(Constants.MAGIC_NUMBER);
         log.info("server send,length:{}",bytes.length);
-        ctx.writeAndFlush(buf);
+        ctx.writeAndFlush(respRpcProtocol);
     }
 
     @Override
