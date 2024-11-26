@@ -13,9 +13,9 @@ import com.hym.rpc.core.protocol.RpcInvocation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.UUID;
-import java.util.concurrent.TimeoutException;
 
-import static com.hym.rpc.common.cache.CommonClientCache.*;
+import static com.hym.rpc.common.cache.CommonClientCache.RESP_MAP;
+import static com.hym.rpc.common.cache.CommonClientCache.SEND_QUEUE;
 
 public class JDKClientInvocationHandler implements InvocationHandler {
 

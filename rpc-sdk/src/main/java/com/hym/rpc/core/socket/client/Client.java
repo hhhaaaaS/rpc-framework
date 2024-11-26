@@ -15,8 +15,8 @@ import com.hym.rpc.core.encoder.RpcDecoder;
 import com.hym.rpc.core.encoder.RpcEncoder;
 import com.hym.rpc.core.protocol.RpcInvocation;
 import com.hym.rpc.core.protocol.RpcProtocol;
-import com.hym.rpc.core.proxy.jdk.JDKProxyFactory;
 import com.hym.rpc.core.proxy.RpcReference;
+import com.hym.rpc.core.proxy.jdk.JDKProxyFactory;
 import com.hym.rpc.core.socket.client.handle.ClientHandler;
 import com.hym.rpc.rpcInterface.DataService;
 import io.netty.bootstrap.Bootstrap;
@@ -28,7 +28,8 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import static com.hym.rpc.common.cache.CommonClientCache.*;
+
+import static com.hym.rpc.common.cache.CommonClientCache.SEND_QUEUE;
 
 @Data
 @Slf4j

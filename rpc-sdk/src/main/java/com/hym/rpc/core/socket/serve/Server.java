@@ -20,11 +20,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import jakarta.annotation.Resource;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.hym.rpc.common.cache.CommonServerCache.*;
+import javax.annotation.Resource;
+
+import static com.hym.rpc.common.cache.CommonServerCache.PROVIDER_CLASS_MAP;
 
 @Data
 @Slf4j

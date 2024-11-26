@@ -16,7 +16,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.hym.rpc.common.cache.CommonClientCache.*;
+import static com.hym.rpc.common.cache.CommonClientCache.RESP_MAP;
 
 @Slf4j
 public class ClientHandler extends ChannelInboundHandlerAdapter {
