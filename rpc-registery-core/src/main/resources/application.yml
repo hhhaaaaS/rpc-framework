@@ -1,0 +1,14 @@
+server:
+  port: 9852
+
+spring:
+  application:
+    name: registery-core
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:9852/eureka/  # Eureka 服务器自己指向自己
+  server:
+      enable-self-preservation: false
+      eviction-interval-timer-in-ms: 30000
